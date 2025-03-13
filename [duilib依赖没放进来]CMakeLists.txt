@@ -1,0 +1,76 @@
+cmake_minimum_required(VERSION 3.28)
+project(VideoPlayerTest01)
+set(TARGET_NAME VideoPlayerDemo)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+
+get_filename_component(DUILIB_SRC_ROOT_DIR "${CMAKE_SOURCE_DIR}/ThridPart/nim_duilib" ABSOLUTE)
+get_filename_component(SKIA_SRC_ROOT_DIR "${CMAKE_SOURCE_DIR}/ThridPart/skia/" ABSOLUTE)
+
+INCLUDE_DIRECTORIES(
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${DUILIB_SRC_ROOT_DIR}/include
+)
+
+if(WIN32)
+    message("Windows platform.")
+    ADD_DEFINITIONS(-DUNICODE)
+    ADD_DEFINITIONS(-D_UNICODE)
+
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+
+    set(CompilerFlags
+            CMAKE_CXX_FLAGS
+            CMAKE_CXX_FLAGS_DEBUG
+            CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_C_FLAGS
+            CMAKE_C_FLAGS_DEBUG
+            CMAKE_C_FLAGS_RELEASE
+    )
+
+    if(MSVC)
+        if (CMAKE_BUILD_TYPE MATCHES "Debug")
+            ADD_DEFINITIONS(-DDEBUG)
+            ADD_DEFINITIONS(-D_DEBUG)
+
+            foreach(CompilerFlag ${CompilerFlags})
+                string(REPLACE "/MDd" "/MTd" ${CompilerFlag} "${${CompilerFlag}}")
+            endforeach()
+            add_compile_options($<$<CONFIG:Debug>:/MTd>)
+
+            link_directories("${DUILIB_SRC_ROOT_DIR}/libs/debug/")
+            link_directories("${SKIA_SRC_ROOT_DIR}/libs/debug/")
+        elseif (CMAKE_BUILD_TYPE MATCHES "Release")
+            ADD_DEFINITIONS(-DRELEASE)
+            ADD_DEFINITIONS(-D_RELEASE)
+
+            foreach(CompilerFlag ${CompilerFlags})
+                string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+            endforeach()
+            add_compile_options($<$<CONFIG:Release>:/MT>)
+
+            link_directories("${DUILIB_SRC_ROOT_DIR}/libs/")
+            link_directories("${SKIA_SRC_ROOT_DIR}/libs/")
+        endif ()
+    endif ()
+endif()
+
+file(GLOB SOURCES "./*.cpp")
+
+add_executable(${TARGET_NAME} ${SOURCES})
+
+if (CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+    target_link_libraries(${TARGET_NAME} duilib_d cximage_d libwebp_d libpng_d zlib_d skia)
+else ()
+    target_link_libraries(${TARGET_NAME} duilib cximage libwebp libpng zlib skia)
+endif ()
+
+# 设置需要复制的资源文件
+file(GLOB RESOURCES_TO_COPY "./resources")
+message(STATUS "<CMAKE_BINARY_DIR> path:${CMAKE_BINARY_DIR}")
+# 设置资源文件的目的地输出目录
+set(RESOURCES_OUTPUT_PATH "${CMAKE_BINARY_DIR}/")
+file(COPY ${RESOURCES_TO_COPY} DESTINATION ${RESOURCES_OUTPUT_PATH})

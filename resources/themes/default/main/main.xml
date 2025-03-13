@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="1346,894" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36" caption="0,0,0,36" use_system_caption="false" shadow_attached="true" layered_window="true" sizebox="2,2,2,2" mininfo="400,320" icon="./logo.ico">
+    <!-- 整个布局放在一个VBox容器中 -->
+    <!-- 布局属性：margin="left,top,right,bottom"; padding="left,top,right,bottom" -->
+
+    <Class name="btn_global_play"
+           normal_image="file='./icon/play.png' dest='0,0,100,100'"
+           hot_image="file='./icon/play_hover.png'  dest='0,0,100,100'"
+           pushed_image="file='./icon/play.png'  dest='0,0,100,100'"
+           disabled_image="file='./icon/play_disable.png'  dest='0,0,100,100' fade='80'"
+           selected_normal_image="file='./icon/pause.png' dest='0,0,100,100'"
+           selected_hot_image="file='./icon/pause_hover.png' dest='0,0,100,100'"
+           selected_pushed_image="file='./icon/pause.png' dest='0,0,100,100'"
+           selected_disabled_image="file='./icon/pause_disable.png' dest='0,0,100,100' fade='80'"
+    />
+    
+    <VBox bkcolor="bk_wnd_darkcolor">
+        <!-- 标题栏区域 -->
+        <HBox name="window_caption_bar" width="stretch" height="36" bkcolor="bk_wnd_lightcolor">
+            <Control width="26" height="26" bkimage="camera-icon-26.png" valign="center" margin="8"/>
+            <Label name="window_title" text="视频播放Demo [2k屏幕下最大化窗口，此时就卡顿了]" valign="center" margin="8"/>
+            <Control />
+            <Button class="btn_wnd_settings_11" height="32" width="40" name="settings" margin="0,2,0,2" tooltip_text="设置"/>
+            <Button class="btn_wnd_min_11" height="32" width="40" name="minbtn" margin="0,2,0,2" tooltip_text="最小化"/>
+            <Box height="stretch" width="40" margin="0,2,0,2">
+                <Button class="btn_wnd_max_11" height="32" width="stretch" name="maxbtn" tooltip_text="最大化"/>
+                <Button class="btn_wnd_restore_11" height="32" width="stretch" name="restorebtn" visible="false" tooltip_text="还原"/>
+            </Box>
+            <Button class="btn_wnd_close_11" height="stretch" width="40" name="closebtn" margin="0,0,0,2" tooltip_text="关闭"/>
+        </HBox>
+
+        <VBox name="content_box">
+            <HBox name="box_video_wrapper" padding="10,10,10,10">
+                <VBox padding="2,2,2,2" border_size="1" border_color="splitline_level1">
+                    <HBox height="40" width="stretch" padding="5">
+                        <Label height="40" text="[可见光]" />
+                    </HBox>
+                    <Box>
+                        <VideoDisplay name="video_channel_0" cursortype="cross" border_size="1" border_color="splitline_level1" />
+                    </Box>
+                </VBox>
+                <Control width="10" />
+                <VBox padding="2,2,2,2" border_size="1" border_color="splitline_level1">
+                    <HBox height="40" width="stretch" padding="5">
+                        <Label height="40" text="[红  外]" />
+                    </HBox>
+                    <Box>
+                        <VideoDisplay name="video_channel_1" cursortype="cross" border_size="1" border_color="splitline_level1"/>
+                    </Box>
+                </VBox>
+            </HBox>
+            <HBox height="46%" padding="10,10,10,10">
+                <VBox padding="5,0,5,5" border_size="1" border_color="splitline_level1">
+                    <Label height="24" text="系统日志 [已控制日志刷新率为25Hz，不然也会导致卡顿]" />
+                    <RichEdit class="prompt" name="edt_system_log_msg" readonly="true" bkcolor="bk_wnd_lightcolor"
+                              hide_selection="false" multiline="true" vscrollbar="true" hscrollbar="true" auto_vscroll="true"
+                              normal_text_color="darkcolor" want_return_msg="true" rich="false" loading_bkcolor="dark_gray"/>
+                </VBox>
+                <Box margin="10" padding="5,0,5,5" width="150" border_size="1" border_color="splitline_level1">
+                    <HBox padding="0,20,0,0" width="stretch" height="stretch" valign="top">
+                        <Label width="60" height="24" text="帧率：" text_align="right" />
+                        <RichEdit class="simple input" name="edt_video_channel_fps" text="50" width="30" height="32" font="system_12" text_align="vcenter" text_padding="4,4,4,4"/>
+                    </HBox>
+                    <CheckBox class="btn_global_play" name="video_channel_play" width="100" height="100" cursortype="hand" valign="center" halign="center" tooltip_text="播放/暂停"/>
+                </Box>
+            </HBox>
+        </VBox>
+    </VBox>
+</Window>
